@@ -17,6 +17,7 @@ model users {
     ipAddress String
     joinedAt DateTime @default(now())
     lastLoginAt DateTime @updatedAt
+    banned Boolean @default(false)
     comments comments[]
 }
 
@@ -28,5 +29,7 @@ model comments {
     editedAt DateTime?
     postSlug String
     content String
+    previousContent String?
+    hidden Boolean @default(false)
     replyTo Int?
 }
