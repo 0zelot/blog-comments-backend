@@ -3,6 +3,9 @@ import cors from "@fastify/cors";
 import autoload from "@fastify/autoload";
 import { PrismaClient } from "@prisma/client";
 
+import { fileURLToPath } from "node:url";
+import { join, dirname } from "node:path";
+
 import config from "./config.js";
 
 const fastify = Fastify({
@@ -11,7 +14,16 @@ const fastify = Fastify({
 });
 
 fastify.register(cors);
-fastify.register(autoload, { dir: "./routes" });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+fastify.register(autoload, { 
+    dir: join(__dirname, "./routes"),
+    options: {
+        prefix: "/api" 
+    }
+});
 
 fastify.setErrorHandler((err, req, res) => {
 
