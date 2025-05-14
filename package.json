@@ -5,15 +5,18 @@
         "type": "git",
         "url": "git+https://github.com/0zelot/blog-comments-backend.git"
     },
-    "author": "Ozelot <contact@ozelot.ovh> (https://ozelot.ovh/)",
-    "homepage": "https://ozelot.ovh",
+    "author": "Ozelot <contact@ozelot.fyi> (https://ozelot.fyi/)",
+    "homepage": "https://ozelot.fyi",
     "scripts": {
         "start": "node .",
         "migrate": "prisma migrate dev --name init"
     },
     "dependencies": {
         "@fastify/autoload": "^6.0.2",
+        "@fastify/cookie": "^11.0.1",
         "@fastify/cors": "^10.0.1",
+        "@fastify/oauth2": "^8.1.0",
+        "@fastify/session": "^11.0.1",
         "@prisma/client": "^5.21.1",
         "fastify": "^5.0.0"
     },
