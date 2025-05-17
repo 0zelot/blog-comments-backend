@@ -12,12 +12,13 @@ datasource db {
 
 model users {
     id Int @id @unique @default(autoincrement())
-    githubId String? @unique
+    githubId String @unique
     email String @unique
-    displayName String
+    login String @unique
+    displayName String?
     ipAddress String
     joinedAt DateTime @default(now())
-    lastSeenAt DateTime @updatedAt
+    lastSeenAt DateTime
     banned Boolean @default(false)
     comments comments[]
 }
