@@ -13,7 +13,6 @@ datasource db {
 model users {
     id Int @id @unique @default(autoincrement())
     githubId String? @unique
-    discordId String? @unique
     email String @unique
     displayName String
     ipAddress String
