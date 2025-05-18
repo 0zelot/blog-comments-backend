@@ -1,5 +1,7 @@
 import { prisma } from "../../index.js";
 
+import getIpAddr from "../../utils/getIpAddr.js";
+
 export default async (fastify, options) => {
 
     fastify.get("/login/callback", async (req, res) => {
@@ -30,7 +32,7 @@ export default async (fastify, options) => {
 
             const userInfo = await userInfoResponse.json();
 
-            const ipAddr = req.headers["cf-connecting-ip"] || "127.0.0.1";
+            const ipAddr = getIpAddr(req);
 
             const user = await prisma.users.findFirst({
                 where: { githubId: userInfo.id }
@@ -56,14 +58,19 @@ export default async (fastify, options) => {
                 }
             });
 
+            const { githubId, login, displayName, banned } = user;
+
+            if(banned) res.send({
+                success: false,
+                error: "Your account is suspended"
+            })
+
             req.session.token = token.access_token, 
             req.session.user = user;
-            
-            const { githubId, login, displayName, banned } = user;
 
             res.send({ 
                 success: true, 
-                data: { githubId, email, login, displayName, banned }
+                data: { githubId, email, login, displayName }
             });
 
         } catch(err) {
