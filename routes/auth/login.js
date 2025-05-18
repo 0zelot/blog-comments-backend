@@ -1,3 +1,5 @@
+import { prisma } from "../../index.js";
+
 export default async (fastify, options) => {
 
     fastify.get("/login/callback", async (req, res) => {
@@ -28,7 +30,31 @@ export default async (fastify, options) => {
 
             const userInfo = await userInfoResponse.json();
 
-            console.log(userInfo)
+            const ipAddr = req.headers["cf-connecting-ip"] || "127.0.0.1";
+
+            const user = await prisma.users.findFirst({
+                where: { githubId: userInfo.id }
+            });
+
+            if(user) await prisma.users.update({
+                where: { githubId: userInfo.id },
+                data: {
+                    email,
+                    login: userInfo.login,
+                    displayName: userInfo.name,
+                    ipAddress: ipAddr
+                }
+            });
+
+            else await prisma.users.create({
+                data: {
+                    githubId: userInfo.id,
+                    email,
+                    login: userInfo.login,
+                    displayName: userInfo.name,
+                    ipAddress: ipAddr
+                }
+            });
 
             req.session.user = {
                 token: token.access_token, email
