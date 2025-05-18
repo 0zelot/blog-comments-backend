@@ -12,7 +12,7 @@ datasource db {
 
 model users {
     id Int @id @unique @default(autoincrement())
-    githubId String @unique
+    githubId Int @unique
     email String @unique
     login String @unique
     displayName String?
