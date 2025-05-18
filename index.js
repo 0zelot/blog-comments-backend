@@ -39,9 +39,9 @@ fastify.register(oauthPlugin, {
     callbackUri: `${config.baseUrl}/auth/login/callback`,
 });
 
-fastify.decorate("requireAuthentication", (req, reply, done) => {
+fastify.decorate("requireAuthentication", (req, res, done) => {
     if(!req.session?.user) {
-        reply.status(401).send({ succes: false, error: "Unauthorized" });
+        res.status(401).send({ succes: false, error: "Unauthorized" });
         return;
     }
     done();

@@ -56,11 +56,15 @@ export default async (fastify, options) => {
                 }
             });
 
-            req.session.user = {
-                token: token.access_token, email
-            }
+            req.session.token = token.access_token, 
+            req.session.user = user;
             
-            res.send({ success: true, token: token.access_token, email });
+            const { githubId, login, displayName, banned } = user;
+
+            res.send({ 
+                success: true, 
+                data: { githubId, email, login, displayName, banned }
+            });
 
         } catch(err) {
             console.error(err);
