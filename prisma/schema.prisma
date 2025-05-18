@@ -18,7 +18,7 @@ model users {
     displayName String?
     ipAddress String
     joinedAt DateTime @default(now())
-    lastSeenAt DateTime
+    lastSeenAt DateTime @updatedAt
     banned Boolean @default(false)
     comments comments[]
 }
