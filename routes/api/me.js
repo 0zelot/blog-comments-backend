@@ -8,11 +8,11 @@ export default async (fastify, options) => {
             where: { githubId: req.session.user.githubId }
         });
 
-        const { githubId, email, login, displayName, banned } = user;
+        const { githubId, email, login, displayName } = user;
 
         res.send({ 
             success: true, 
-            data: { githubId, email, login, displayName, banned } 
+            data: { githubId, email, login, displayName } 
         })
     
     });
