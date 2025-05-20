@@ -41,7 +41,7 @@ export default async (fastify, options) => {
                     where: { id: replyTo }
                 });
 
-                if(!mainComment) return res.status(404).send({ success: false, error: "Could not found main comment" });
+                if(!mainComment) return res.status(404).send({ success: false, error: "Comment not found" });
 
             }
 
@@ -73,7 +73,7 @@ export default async (fastify, options) => {
 
         } catch(err) {
             console.error(err);
-            res.status(500).send({ success: false });
+            return res.status(500).send({ success: false });
         }
 
     });
