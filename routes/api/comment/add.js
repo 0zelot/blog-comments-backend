@@ -41,7 +41,7 @@ export default async (fastify, options) => {
                     where: { id: replyTo }
                 });
 
-                if(!mainComment) return res.status(400).send({ success: false, error: "Could not found main comment" });
+                if(!mainComment) return res.status(404).send({ success: false, error: "Could not found main comment" });
 
             }
 
