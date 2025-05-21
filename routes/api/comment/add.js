@@ -1,5 +1,7 @@
 import { prisma } from "../../../index.js";
 
+import cleanContent from "../../../utils/cleanContent.js";
+
 import config from "../../../config.js";
 
 const rateLimit = new Map();
@@ -25,11 +27,7 @@ export default async (fastify, options) => {
 
         if(rateLimit.has(req.session.user.id)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
 
-        const parsedContent = content
-            .replace(/[ \t]+/g, " ")
-            .replace(/^[ ]+|[ ]+$/gm, "")
-            .replace(/\n{3,}/g, "\n\n")
-            .trim()
+        const parsedContent = cleanContent(content);
 
         if(parsedContent.length < 20 || parsedContent.length > 4000) return res.status(400).send({ success: false, error: "Comment content is too short or too long" });
 
