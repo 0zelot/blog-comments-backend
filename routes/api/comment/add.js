@@ -41,6 +41,18 @@ export default async (fastify, options) => {
 
                 if(!mainComment) return res.status(404).send({ success: false, error: "Comment not found" });
 
+            } else {
+
+                const topLevelCount = await prisma.comments.count({
+                    where: {
+                        authorId: req.session.user.id,
+                        postSlug,
+                        replyTo: null
+                    }
+                });
+    
+                if(topLevelCount >= config.maxCommentCount) return res.status(429).send({ success: false, error: `You can not post more than ${config.maxCommentCount} top-level comments on single post` });
+
             }
 
             const comment = await prisma.comments.create({
