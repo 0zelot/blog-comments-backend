@@ -20,10 +20,13 @@ fastify.register(cors);
 fastify.register(cookie);
 fastify.register(session, {
     secret: config.oauth.secret,
-    cookie: { secure: config.secure },
     saveUninitialized: false,
-    path: "/",
-    sameSite: "Lax",
+    cookie: { 
+        secure: config.secure,
+        path: "/",
+        sameSite: "Lax",
+        domain: `.${config.domain}`
+    }
 });
 
 const { id, secret } = config.oauth.github;
