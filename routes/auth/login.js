@@ -2,6 +2,8 @@ import { prisma } from "../../index.js";
 
 import getIpAddr from "../../utils/getIpAddr.js";
 
+import config from "../../config.js";
+
 export default async (fastify, options) => {
 
     fastify.get("/login/callback", async (req, res) => {
@@ -58,20 +60,20 @@ export default async (fastify, options) => {
                 }
             });
 
-            const { githubId, login, displayName, banned } = user;
 
-            if(banned) res.send({
+            if(user.banned) res.send({
                 success: false,
                 error: "Your account is suspended"
             })
 
+            const { githubId, login, displayName } = user;
+
             req.session.token = token.access_token, 
             req.session.user = user;
 
-            res.send({ 
-                success: true, 
-                data: { githubId, email, login, displayName }
-            });
+            const redirectUrl = req.cookies.redirectUrl || "/blog";
+        
+            res.redirect(`https://${config.domain}${redirectUrl}`);
 
         } catch(err) {
             console.error(err);
