@@ -11,13 +11,14 @@ export default async (fastify, options) => {
         try {
 
             const comments = await prisma.comments.findMany({
-                where: { postSlug, hidden: false },
+                where: { postSlug },
                 select: {
                     id: true,
                     createdAt: true,
                     editedAt: true,
                     content: true,
                     replyTo: true,
+                    hidden: true,
                     author: {
                         select: {
                             id: true,
@@ -28,13 +29,27 @@ export default async (fastify, options) => {
                     }
                 }
             });
-
+            
             const commentsMap = new Map();
-
-            comments.forEach(comment => commentsMap.set(comment.id, { ...comment, replies: [] }));
-
+            
+            comments.forEach(comment => {
+                if(comment.hidden) {
+                    commentsMap.set(comment.id, {
+                        ...comment,
+                        author: null,
+                        content: "",
+                        replies: []
+                    });
+                } else {
+                    commentsMap.set(comment.id, {
+                        ...comment,
+                        replies: []
+                    });
+                }
+            });
+            
             const rootComments = [];
-
+            
             for(const comment of commentsMap.values()) {
                 if(comment.replyTo) {
                     const parent = commentsMap.get(comment.replyTo);
@@ -43,7 +58,18 @@ export default async (fastify, options) => {
                 } else rootComments.push(comment);
             }
 
-            return res.send({ success: true, data: rootComments });
+            function filterComments(comments) {
+                return comments
+                    .map(c => ({
+                        ...c,
+                        replies: filterComments(c.replies)
+                    }))
+                    .filter(c => c.content || c.replies.length > 0);
+            }
+              
+            const filteredRootComments = filterComments(rootComments);
+              
+            return res.send({ success: true, data: filteredRootComments });
 
         } catch(err) {
             console.error(err);
