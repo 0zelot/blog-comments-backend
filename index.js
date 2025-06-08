@@ -16,8 +16,13 @@ const fastify = Fastify({
     ignoreTrailingSlash: true
 });
 
-fastify.register(cors);
+await fastify.register(cors, {
+    origin: config.secure ? `http://${config.domain}` : `http://localhost:3000`,
+    credentials: true
+});
+
 fastify.register(cookie);
+
 fastify.register(session, {
     secret: config.oauth.secret,
     saveUninitialized: false,
