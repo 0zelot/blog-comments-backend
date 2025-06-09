@@ -39,7 +39,7 @@ export default async (fastify, options) => {
 
             if(!findComment || findComment.hidden) return res.status(404).send({ success: false, error: "Comment not found" });
 
-            if(findComment.authorId !== req.session.user.id) return res.status(403).send({ success: false, error: "You are not authorized to edit this comment" });
+            if(findComment.authorId !== req.session.user.id && !config.adminUsers.includes(req.session.githubId)) return res.status(403).send({ success: false, error: "You are not authorized to edit this comment" });
 
             const comment = await prisma.comments.update({
                 where: { id },

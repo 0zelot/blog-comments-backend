@@ -15,7 +15,7 @@ setInterval(() => {
 
 export default async (fastify, options) => {
 
-    fastify.post("/delete", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+    fastify.delete("/delete", { preHandler: fastify.requireAuthentication }, async (req, res) => {
 
         if(!req.body) return res.status(400).send({ success: false, error: "Missing body" });
 
@@ -33,7 +33,7 @@ export default async (fastify, options) => {
 
             if(!comment) return res.status(404).send({ success: false, error: "Comment not found" });
 
-            if(comment.authorId !== req.session.user.id) return res.status(403).send({ success: false, error: "You are not authorized to delete this comment" });
+            if(comment.authorId !== req.session.user.id && !config.adminUsers.includes(req.session.githubId)) return res.status(403).send({ success: false, error: "You are not authorized to delete this comment" });
 
             await prisma.comments.update({
                 where: { id },
