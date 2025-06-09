@@ -19,7 +19,6 @@ model users {
     ipAddress String
     joinedAt DateTime @default(now())
     lastSeenAt DateTime @updatedAt
-    banned Boolean @default(false)
     comments comments[]
 }
 

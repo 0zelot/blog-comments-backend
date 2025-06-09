@@ -61,10 +61,7 @@ export default async (fastify, options) => {
             });
 
 
-            if(user.banned) res.send({
-                success: false,
-                error: "Your account is suspended"
-            })
+            if(config.bannedUsers.includes(userInfo.id)) return res.send("Your account is suspended");
 
             const { githubId, login, displayName } = user;
 
