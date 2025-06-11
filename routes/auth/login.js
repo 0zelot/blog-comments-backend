@@ -36,7 +36,7 @@ export default async (fastify, options) => {
 
             const ipAddr = getIpAddr(req);
 
-            const user = await prisma.users.findFirst({
+            let user = await prisma.users.findFirst({
                 where: { githubId: userInfo.id }
             });
 
@@ -50,7 +50,7 @@ export default async (fastify, options) => {
                 }
             });
 
-            else await prisma.users.create({
+            else user = await prisma.users.create({
                 data: {
                     githubId: userInfo.id,
                     email,
