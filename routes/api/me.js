@@ -8,12 +8,17 @@ export default async (fastify, options) => {
             where: { githubId: req.session.user.githubId }
         });
 
+        if(!user) return res.status(404).send({ 
+            success: false, 
+            error: "User not found"
+        });
+
         const { githubId, email, login, displayName } = user;
 
         res.send({ 
             success: true, 
             data: { githubId, email, login, displayName } 
-        })
+        });
     
     });
     
