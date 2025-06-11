@@ -17,7 +17,7 @@ setInterval(() => {
 
 export default async (fastify, options) => {
 
-    fastify.post("/edit", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+    fastify.put("/edit", { preHandler: fastify.requireAuthentication }, async (req, res) => {
 
         if(!req.body) return res.status(400).send({ success: false, error: "Missing body" });
 
