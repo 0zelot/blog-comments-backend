@@ -15,13 +15,11 @@ setInterval(() => {
 
 export default async (fastify, options) => {
 
-    fastify.delete("/delete", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+    fastify.delete("/delete/:id", { preHandler: fastify.requireAuthentication }, async (req, res) => {
 
-        if(!req.body) return res.status(400).send({ success: false, error: "Missing body" });
+        const id = Number(req.params?.id);
 
-        const { id } = req.body;
-
-        if(!id) return res.status(400).send({ success: false, error: "Missing id" });
+        if(!Number.isInteger(id) || id <= 0) return res.status(400).send({ success: false, error: "Missing id" });
 
         if(rateLimit.has(req.session.user.id)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
 
