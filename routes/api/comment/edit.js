@@ -17,11 +17,13 @@ setInterval(() => {
 
 export default async (fastify, options) => {
 
-    fastify.put("/edit", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+    fastify.put("/edit/:id", { preHandler: fastify.requireAuthentication }, async (req, res) => {
 
-        if(!req.body) return res.status(400).send({ success: false, error: "Missing body" });
+        const id = Number(req.params?.id);
 
-        const { id, content } = req.body;
+        if(!Number.isInteger(id) || id <= 0) return res.status(400).send({ success: false, error: "Missing id" });
+
+        const { content } = req.body;
 
         if(!id || !content) return res.status(400).send({ success: false, error: "Missing id and/or content" });
 
