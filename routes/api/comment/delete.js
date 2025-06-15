@@ -21,7 +21,7 @@ export default async (fastify, options) => {
 
         if(!Number.isInteger(id) || id <= 0) return res.status(400).send({ success: false, error: "Missing id" });
 
-        if(rateLimit.has(req.session.user.id)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
+        if(rateLimit.has(req.session.user.id) && !config.adminUsers.includes(req.session.user.githubId)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
 
         try {
 
@@ -31,7 +31,7 @@ export default async (fastify, options) => {
 
             if(!comment) return res.status(404).send({ success: false, error: "Comment not found" });
 
-            if(comment.authorId !== req.session.user.id && !config.adminUsers.includes(req.session.githubId)) return res.status(403).send({ success: false, error: "You are not authorized to delete this comment" });
+            if(comment.authorId !== req.session.user.id && !config.adminUsers.includes(req.session.user.githubId)) return res.status(403).send({ success: false, error: "You are not authorized to delete this comment" });
 
             await prisma.comments.update({
                 where: { id },
