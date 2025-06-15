@@ -17,15 +17,17 @@ setInterval(() => {
 
 export default async (fastify, options) => {
 
-    fastify.post("/add", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+    fastify.post("/add/:postSlug", { preHandler: fastify.requireAuthentication }, async (req, res) => {
+
+        const postSlug = req.params?.postSlug;
 
         if(!req.body) return res.status(400).send({ success: false, error: "Missing body" });
 
-        const { postSlug, content, replyTo } = req.body;
+        const { content, replyTo } = req.body;
 
         if(!postSlug || !content) return res.status(400).send({ success: false, error: "Missing postSlug and/or content" });
 
-        if(rateLimit.has(req.session.user.id)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
+        if(rateLimit.has(req.session.user.id) && !config.adminUsers.includes(req.session.user.githubId)) return res.status(429).send({ success: false, error: "You are being rate-limited" });
 
         const parsedContent = cleanContent(content);
 
@@ -47,11 +49,12 @@ export default async (fastify, options) => {
                     where: {
                         authorId: req.session.user.id,
                         postSlug,
-                        replyTo: null
+                        replyTo: null,
+                        hidden: false
                     }
                 });
     
-                if(topLevelCount >= config.maxCommentCount) return res.status(429).send({ success: false, error: `You can not post more than ${config.maxCommentCount} top-level comments on single post` });
+                if(topLevelCount >= config.maxCommentCount) return res.status(400).send({ success: false, error: `You can not post more than ${config.maxCommentCount} top-level comments on single post` });
 
             }
 
