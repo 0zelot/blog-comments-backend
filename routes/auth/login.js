@@ -68,7 +68,7 @@ export default async (fastify, options) => {
             req.session.token = token.access_token, 
             req.session.user = user;
 
-            const redirectUrl = req.cookies.redirectUrl || "/blog";
+            const redirectUrl = `${req.cookies.redirectUrl}#comments` || "/blog";
         
             res.redirect(`https://${config.domain}${redirectUrl}`);
 
