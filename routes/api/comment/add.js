@@ -1,6 +1,7 @@
 import { prisma } from "../../../index.js";
 
 import cleanContent from "../../../utils/cleanContent.js";
+import sendEmail from "../../../utils/sendEmail.js";
 
 import config from "../../../config.js";
 
@@ -81,6 +82,8 @@ export default async (fastify, options) => {
             if(!comment) return res.status(500).send({ success: false, error: "Could not add comment" });
 
             rateLimit.set(req.session.user.id, Date.now());
+
+            await sendEmail(config.commentAlerts, `${req.session.user.login} commented ${postSlug}`, `${req.session.user.login} commented ${postSlug}. <a href="https://${config.domain}/blog/${postSlug}">Click here</a> to see comment.`).catch(err => console.error(err));
     
             return res.send({ success: true, data: comment });
 
