@@ -1,6 +1,6 @@
 # blog-comments-backend
 
-Fastify-based backend API that handles comment functionality for blog posts, with GitHub OAuth, session management, and rate-limiting.
+Fastify-based backend API that handles comment functionality for blog posts, with GitHub OAuth, session management and rate-limiting.
 
 ## Features
 
